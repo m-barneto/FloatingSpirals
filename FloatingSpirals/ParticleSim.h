@@ -33,7 +33,7 @@ public:
     };
     std::vector<Particle> particles;
     float resolution;
-    ParticleSim(int width, int height, int resolution = 144, int particleCount = 1000) {
+    ParticleSim(int width, int height, int resolution = 144, int particleCount = 100) {
         noise.SetSeed(time(NULL));
         noise.SetNoiseType(FastNoise::Cellular);
         //noise.SetFrequency(1.0);
@@ -43,13 +43,21 @@ public:
         this->resolution = 1.f / resolution;
 
         Particle p{};
+        p.pos = Vector2f(-100.f, -100.f);
+        particles.push_back(p);
+        p.pos = Vector2f(-100.f, height + 100.f);
+        particles.push_back(p);
+        p.pos = Vector2f(width + 100.f, -100.f);
+        particles.push_back(p);
+        p.pos = Vector2f(width + 100.f, height + 100.f);
+        particles.push_back(p);
         for (int i = 0; i < particleCount; i++) {
             p.pos = Vector2f((float)(rand() % width), (float)(rand() % height));
             particles.push_back(p);
         }
     }
     void update(float currentTime) {
-        for (size_t i = 0; i < particles.size(); i++) {
+        for (size_t i = 4; i < particles.size(); i++) {
             particles[i].update(resolution, currentTime, size, noise);
         }
     }
