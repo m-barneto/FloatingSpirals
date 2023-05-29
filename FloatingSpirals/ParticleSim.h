@@ -10,8 +10,9 @@ public:
     Vector2u size;
     struct Particle {
         Vector2f pos, vel, acc;
+        float val;
         void update(const float dT, const float cT, const Vector2u& size, const FastNoise& noise) {
-            float val = noise.GetNoise(pos.x, pos.y, cT * 100.f) * 180.f;
+            val = noise.GetNoise(pos.x, pos.y, cT) * 180.f;
             acc += Vector2f(cosf(val), sinf(val)) * dT * 1000.f;
 
             pos += vel * dT;
@@ -19,6 +20,8 @@ public:
 
             acc = Vector2f();
             vel *= .995f;
+
+            /*
             if (pos.x < 0.f) {
                 pos.x = (float)size.x;
             } else if (pos.x > size.x) {
@@ -29,14 +32,26 @@ public:
             } else if (pos.y > size.y) {
                 pos.y = 0.f;
             }
+            
+            */
+            if (pos.x < 0.f) {
+                pos.x = 0.f;
+            } else if (pos.x > size.x) {
+                pos.x = size.x;
+            }
+            if (pos.y < 0.f) {
+                pos.y = 0.f;
+            } else if (pos.y > size.y) {
+                    pos.y = size.y;
+            }
         }
     };
     std::vector<Particle> particles;
     float resolution;
     ParticleSim(int width, int height, int resolution = 144, int particleCount = 100) {
         noise.SetSeed(time(NULL));
-        noise.SetNoiseType(FastNoise::Cellular);
-        //noise.SetFrequency(1.0);
+        noise.SetNoiseType(FastNoise::Value);
+        noise.SetFrequency(.005);
 
         this->size = Vector2u(width, height);
 

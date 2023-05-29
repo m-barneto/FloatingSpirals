@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="FloatingSpirals.cpp" />
     <ClCompile Include="lib\FastNoise.cpp" />
+    <ClCompile Include="lib\hsvrgb.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lib\delaunator.h" />

@@ -6,10 +6,11 @@ using namespace sf;
 #include "Renderer.h"
 
 int main() {
-    RenderWindow window(VideoMode(800, 600), "Floating Spiral Triangles");
+    RenderWindow window(VideoMode::getFullscreenModes()[0], "Floating Spiral Triangles", Style::Fullscreen, ContextSettings::ContextSettings(0U, 0U, 8U));
 
     window.setKeyRepeatEnabled(false);
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(144);
+    
 
 
 
@@ -17,7 +18,7 @@ int main() {
 
 
 
-    ParticleSim sim(800, 600);
+    ParticleSim sim(window.getSize().x, window.getSize().y, 144, 100);
 
     Renderer renderer(&window);
 
@@ -36,11 +37,15 @@ int main() {
                 case Keyboard::Space:
                     paused = !paused;
                     break;
+                case Keyboard::Escape:
+                    window.close();
                 }
             }
         }
         if (paused) {
             sleep(milliseconds(1));
+
+            float dt = deltaClock.restart().asSeconds();
             continue;
         }
 
@@ -52,8 +57,11 @@ int main() {
             accumulator -= sim.resolution;
         }
 
-        window.clear(Color::Black);
-        renderer.render(sim.particles);
+        RectangleShape fade(Vector2f(window.getSize().x, window.getSize().y));
+        fade.setFillColor(Color(0, 0, 0, 20));
+        window.draw(fade);
+        //window.clear(Color::Black);
+        renderer.render(sim.particles, sim.noise, currentTime);
         window.display();
     }
 }
